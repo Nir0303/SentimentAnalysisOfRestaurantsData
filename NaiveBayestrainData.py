@@ -72,7 +72,7 @@ print classifier.show_most_informative_features(32)
 
 predictFile="C:\\Users\\Niran0303\\Google Drive\\Hackrpi\\restaurantReviews.csv"
 predictData=open(predictFile)
-outputfile="C:\\Users\\Niran0303\\Google Drive\\Hackrpi\\restaurantopReviews.csv"
+outputfile="C:\\Users\\Niran0303\\Google Drive\\Hackrpi\\NaiveBayesRestaurantReviewsOP.csv"
 outfile=open(outputfile,'w')
 for x in predictData.readlines():
 	d=x.split('~')
