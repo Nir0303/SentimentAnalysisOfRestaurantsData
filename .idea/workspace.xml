@@ -1,20 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c92cc152-7019-4888-a126-0ce1fd603cc0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/DecisionTreeClassification.png" afterPath="$PROJECT_DIR$/documentation/DecisionTreeClassification.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Decision_tree_classification.csv" afterPath="$PROJECT_DIR$/TrainDataSet/Decision_tree_classification.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/NaiveBayesDataVisu.pdf" afterPath="$PROJECT_DIR$/documentation/NaiveBayesDataVisu.pdf" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/NaiveBayesDataVisu.png" afterPath="$PROJECT_DIR$/documentation/NaiveBayesDataVisu.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/NaiveBayesRestaurantReviewsOP.csv" afterPath="$PROJECT_DIR$/Outputs/NaiveBayesRestaurantReviewsOP.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/restaurantReviews.csv" afterPath="$PROJECT_DIR$/TrainDataSet/restaurantReviews.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test.py" afterPath="$PROJECT_DIR$/helper/test.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test_restaurant_data.txt" afterPath="$PROJECT_DIR$/TrainDataSet/test_restaurant_data.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/testplotData.py" afterPath="$PROJECT_DIR$/helper/testplotData.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/train_restaurant_data.txt" afterPath="$PROJECT_DIR$/TrainDataSet/train_restaurant_data.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/tripadvisorRequest.py" afterPath="$PROJECT_DIR$/helper/tripadvisorRequest.py" />
-    </list>
+    <list default="true" id="c92cc152-7019-4888-a126-0ce1fd603cc0" name="Default" comment="" />
     <ignored path="SentimentAnalysisOfRestaurantsData.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -95,62 +82,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="SentimentAnalysisOfRestaurantsData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SentimentAnalysisOfRestaurantsData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SentimentAnalysisOfRestaurantsData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="helper" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SentimentAnalysisOfRestaurantsData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SentimentAnalysisOfRestaurantsData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="documentation" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SentimentAnalysisOfRestaurantsData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SentimentAnalysisOfRestaurantsData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="TrainDataSet" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SentimentAnalysisOfRestaurantsData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SentimentAnalysisOfRestaurantsData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Outputs" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -389,7 +320,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="0" width="1924" height="1050" extended-state="0" />
+    <frame x="-8" y="0" width="1924" height="1050" extended-state="1" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24973767" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
