@@ -1,0 +1,1194 @@
+{
+  "metadata" : {
+    "name" : "KMeans-SVM-LinReg",
+    "user_save_timestamp" : "1969-12-31T16:00:00.000Z",
+    "auto_save_timestamp" : "1969-12-31T16:00:00.000Z",
+    "language_info" : {
+      "name" : "scala",
+      "file_extension" : "scala",
+      "codemirror_mode" : "text/x-scala"
+    },
+    "trusted" : true,
+    "customLocalRepo" : null,
+    "customRepos" : null,
+    "customDeps" : null,
+    "customImports" : null,
+    "customArgs" : null,
+    "customSparkConf" : null
+  },
+  "cells" : [ {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab1909030407-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "A19A9521C8134E48811D4CBF2E774DF1"
+    },
+    "cell_type" : "code",
+    "source" : ":dp  org.scala-lang %  scala-swing  %   2.10.4",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "globalScope.jars: Array[String] = [Ljava.lang.String;@7a91d877\nres5: List[String] = List(/tmp/spark-notebook/repo/dad847b1-0dd9-42d0-a24e-1969525231bd/cache/org.scala-lang/scala-swing/jars/scala-swing-2.10.4.jar, /tmp/spark-notebook/repo/dad847b1-0dd9-42d0-a24e-1969525231bd/cache/org.scala-lang/scala-library/jars/scala-library-2.10.4.jar, file:/home/ghattim/spark-nbook/lib/common.common-0.7.0-scala-2.10.6-spark-2.0.1-hadoop-2.7.2-with-hive.jar)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "<div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon9f87a1e4d24cb73009e0db1333ceb415&quot;,&quot;dataInit&quot;:[],&quot;genId&quot;:&quot;1909030407&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tabs'], \n      function(playground, _magictabs) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictabs,\n    \"o\": {}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <div>\n        <ul class=\"nav nav-tabs\" id=\"ul1909030407\"><li>\n              <a href=\"#tab1909030407-0\"><i class=\"fa fa-table\"/></a>\n            </li><li>\n              <a href=\"#tab1909030407-1\"><i class=\"fa fa-cubes\"/></a>\n            </li></ul>\n\n        <div class=\"tab-content\" id=\"tab1909030407\"><div class=\"tab-pane\" id=\"tab1909030407-0\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anonc94bf49f6bb29d7d11cba7e0dda6362a&quot;,&quot;dataInit&quot;:[{&quot;string value&quot;:&quot;/tmp/spark-notebook/repo/dad847b1-0dd9-42d0-a24e-1969525231bd/cache/org.scala-lang/scala-swing/jars/scala-swing-2.10.4.jar&quot;},{&quot;string value&quot;:&quot;/tmp/spark-notebook/repo/dad847b1-0dd9-42d0-a24e-1969525231bd/cache/org.scala-lang/scala-library/jars/scala-library-2.10.4.jar&quot;},{&quot;string value&quot;:&quot;file:/home/ghattim/spark-nbook/lib/common.common-0.7.0-scala-2.10.6-spark-2.0.1-hadoop-2.7.2-with-hive.jar&quot;}],&quot;genId&quot;:&quot;2015816085&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tableChart'], \n      function(playground, _magictableChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictableChart,\n    \"o\": {\"headers\":[\"string value\"],\"width\":600,\"height\":400}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon802692d94adc52f8cd75f9cee6a8d895&quot;,&quot;initialValue&quot;:&quot;3&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon5f6f5004b17fa71ea260664a63cdb968&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div><div class=\"tab-pane\" id=\"tab1909030407-1\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anone40f09beb045a2ec9ab27730705d6976&quot;,&quot;dataInit&quot;:[{&quot;string value&quot;:&quot;/tmp/spark-notebook/repo/dad847b1-0dd9-42d0-a24e-1969525231bd/cache/org.scala-lang/scala-swing/jars/scala-swing-2.10.4.jar&quot;},{&quot;string value&quot;:&quot;/tmp/spark-notebook/repo/dad847b1-0dd9-42d0-a24e-1969525231bd/cache/org.scala-lang/scala-library/jars/scala-library-2.10.4.jar&quot;},{&quot;string value&quot;:&quot;file:/home/ghattim/spark-nbook/lib/common.common-0.7.0-scala-2.10.6-spark-2.0.1-hadoop-2.7.2-with-hive.jar&quot;}],&quot;genId&quot;:&quot;1288368774&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/pivotChart'], \n      function(playground, _magicpivotChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magicpivotChart,\n    \"o\": {\"width\":600,\"height\":400,\"derivedAttributes\":{},\"extraOptions\":{}}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon2d6eb25eb03c923dac311f1e996bc16e&quot;,&quot;initialValue&quot;:&quot;3&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anonc8f78c0433290eb7d05856f527b06733&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div></div>\n      </div>\n    </div></div>"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 2
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "71D83F82310F4CB8867E986982D7CAC7"
+    },
+    "cell_type" : "code",
+    "source" : "val path = \"/oasis/projects/nsf/sun116/ghattim/mars/*.*\"",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "path: String = /oasis/projects/nsf/sun116/ghattim/mars/*.*\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 5
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "FC400D18A348463099A989C31A6F3D05"
+    },
+    "cell_type" : "code",
+    "source" : "val rdd = sc.wholeTextFiles(path)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "rdd: org.apache.spark.rdd.RDD[(String, String)] = /oasis/projects/nsf/sun116/ghattim/mars/*.* MapPartitionsRDD[1] at wholeTextFiles at <console>:73\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 6
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "ACCAC3F2E3314F3D8DBA483AD58D0F08"
+    },
+    "cell_type" : "code",
+    "source" : "val first = rdd.first\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "first: (String, String) =  (file:/oasis/projects/nsf/sun116/ghattim/mars/0917ML0010340010402549C00_DXXX.jpg,??????JFIF?????????????C? ????? ???    ????  ? ????# %$\" \"!&+7/&)4)!\"0A149;>>>%.DIC<H7=>;???.NASA/JPL-Caltech/Malin Space Science Systems??? ????@??????? ??????????????????????????   ????????????????????}????????!1A??Qa?\"q?2????#B???R??$3br?  ?????%&'()*456789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz??????????????????????????????????????????????????????????????????????????????????????@'m? ???????4?????g?[??_???T?? ?f??3??-????i?*??\" ?!?? g?[??_???T??~ ??b?g ?????4????W???X/???????o??{ sx'?cv,G???????o??{ G?O?????1??x???????????+?????????????X}?q? ?????5? ?6o?xuC??Q??????????M=?C/????e??g?p??????OaBxK?`?=? 3?????k??{ ???????#???!????????_???X?3??/????4????<47????????????M}?6O?xp??d?..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 7
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "034F84B9F94D4FA387F503444035F8C6"
+    },
+    "cell_type" : "code",
+    "source" : "val files  =   rdd.map{  case (filename,contents) =>  filename.replace(\"file:\", \"\") }",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "files: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[2] at map at <console>:75\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 8
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "AA94EF9B7771458884996934E7740B1B"
+    },
+    "cell_type" : "code",
+    "source" : "files.first",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res12: String = /oasis/projects/nsf/sun116/ghattim/mars/0917ML0010340010402549C00_DXXX.jpg\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "/oasis/projects/nsf/sun116/ghattim/mars/0917ML0010340010402549C00_DXXX.jpg"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 7
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "7929667A01864142857C19450F7F2931"
+    },
+    "cell_type" : "code",
+    "source" : "val path = files.first",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "path: String = /oasis/projects/nsf/sun116/ghattim/mars/0917ML0010340010402549C00_DXXX.jpg\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 9
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "E20102D02CAE4618A709A8C229C6138B"
+    },
+    "cell_type" : "code",
+    "source" : "import  scala.swing._\nimport  javax.swing._",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import scala.swing._\nimport javax.swing._\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 10
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "95BECD1F56E14649AE07A9DD6EFF98E3"
+    },
+    "cell_type" : "code",
+    "source" : "val img = new ImageIcon(path)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "img: javax.swing.ImageIcon = /oasis/projects/nsf/sun116/ghattim/mars/0917ML0010340010402549C00_DXXX.jpg\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 11
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "4ABB5B587B65416A80D5ADF8E14BD3CB"
+    },
+    "cell_type" : "code",
+    "source" : "import java.awt.image.BufferedImage\n\ndef loadImageFromFile(path: String): BufferedImage = {\n   import javax.imageio.ImageIO\n   import java.io.File\n   ImageIO.read(new File(path))\n}",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import java.awt.image.BufferedImage\nloadImageFromFile: (path: String)java.awt.image.BufferedImage\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 12
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "DD6F60941BF54EEBB930ACDD06A076A1"
+    },
+    "cell_type" : "code",
+    "source" : "val img_ld = files.map(fl => loadImageFromFile(fl))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "img_ld: org.apache.spark.rdd.RDD[java.awt.image.BufferedImage] = MapPartitionsRDD[3] at map at <console>:89\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 13
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "7DB36A9A6943467D8B3EE7397CA53885"
+    },
+    "cell_type" : "code",
+    "source" : "img_ld.count()",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res19: Long = 4945\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "4945"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 13
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "871BAF80D6C848FD8FBFCD59A0760E92"
+    },
+    "cell_type" : "code",
+    "source" : "def processImage(image: BufferedImage, width: Int, height: Int): BufferedImage =   {\n   val bwImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY)\n   val g = bwImage.getGraphics()\n   g.drawImage(image, 0, 0, width, height, null)\n   g.dispose()\n   bwImage\n}",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "processImage: (image: java.awt.image.BufferedImage, width: Int, height: Int)java.awt.image.BufferedImage\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 14
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "1145CE1AC96D43A18D205F37A6C8B848"
+    },
+    "cell_type" : "code",
+    "source" : "val grayAeImage = img_ld.map(f => processImage(f, 100, 100))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "grayAeImage: org.apache.spark.rdd.RDD[java.awt.image.BufferedImage] = MapPartitionsRDD[4] at map at <console>:93\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 15
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "5E22E02D0EC248318A3608B18C28B383"
+    },
+    "cell_type" : "code",
+    "source" : "grayAeImage.count()",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res21: Long = 4945\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "4945"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 16
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "88356CF3F6714FDE9632594ABA97CC26"
+    },
+    "cell_type" : "code",
+    "source" : "def getPixelsFromImage(image: BufferedImage): Array[Double] = {\n   val width = image.getWidth\n   val height = image.getHeight\n   val pixels = Array.ofDim[Double](width * height)\n   image.getData.getPixels(0, 0, width, height, pixels)\n}",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "getPixelsFromImage: (image: java.awt.image.BufferedImage)Array[Double]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 17
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "547CEF284E9141D1B4A87EEAB0E3206D"
+    },
+    "cell_type" : "code",
+    "source" : "def extractPixels(path: String, width: Int, height: Int): Array[Double] = {\n   val raw = loadImageFromFile(path)\n   val processed = processImage(raw, width, height)\n   getPixelsFromImage(processed)\n}",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "extractPixels: (path: String, width: Int, height: Int)Array[Double]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 18
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "A30BE9B890A942E184FF9EF660EBCCB2"
+    },
+    "cell_type" : "code",
+    "source" : "val pixels = files.map(f => extractPixels(f, 50, 50))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "pixels: org.apache.spark.rdd.RDD[Array[Double]] = MapPartitionsRDD[5] at map at <console>:95\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 19
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "3FC0E82C5193437281737E9736D71BF3"
+    },
+    "cell_type" : "code",
+    "source" : "println(pixels.take(10).map(_.take(10).mkString(\"\", \",\", \", ...\")).mkString(\"\\n\"))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "156.0,195.0,170.0,190.0,200.0,165.0,205.0,168.0,188.0,162.0, ...\n98.0,79.0,111.0,139.0,120.0,93.0,138.0,165.0,126.0,160.0, ...\n158.0,172.0,150.0,141.0,152.0,141.0,100.0,149.0,155.0,147.0, ...\n220.0,73.0,64.0,58.0,56.0,55.0,47.0,39.0,33.0,31.0, ...\n37.0,36.0,36.0,30.0,39.0,46.0,87.0,46.0,114.0,50.0, ...\n4.0,5.0,6.0,6.0,25.0,48.0,53.0,53.0,49.0,48.0, ...\n0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0, ...\n109.0,91.0,146.0,152.0,148.0,143.0,134.0,75.0,167.0,108.0, ...\n5.0,14.0,15.0,13.0,22.0,22.0,25.0,23.0,25.0,21.0, ...\n0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,1.0, ...\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 20
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "A1931EEE557343FBB3659E8C5B673E3E"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.mllib.linalg.Vectors",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.mllib.linalg.Vectors\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 20
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "098881C8EDD04F588C25B6B1A193ED73"
+    },
+    "cell_type" : "code",
+    "source" : "val vectors = pixels.map(p => Vectors.dense(p))\nvectors.setName(\"image-vectors\")\nvectors.cache",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "vectors: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = image-vectors MapPartitionsRDD[6] at map at <console>:98\nres27: vectors.type = image-vectors MapPartitionsRDD[6] at map at <console>:98\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "image-vectors MapPartitionsRDD[6] at map at &lt;console&gt;:98"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 21
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "1758A7CCEB12499E970242E44B80C988"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.mllib.linalg.Matrix\nimport org.apache.spark.mllib.linalg.distributed.RowMatrix\nimport org.apache.spark.mllib.feature.StandardScaler\nimport org.apache.spark.mllib.util.MLUtils\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.mllib.linalg.Matrix\nimport org.apache.spark.mllib.linalg.distributed.RowMatrix\nimport org.apache.spark.mllib.feature.StandardScaler\nimport org.apache.spark.mllib.util.MLUtils\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 22
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "8AF7C3FD6AC641618D8BFD0B863A3233"
+    },
+    "cell_type" : "code",
+    "source" : "val scaler = new StandardScaler(withMean = true, withStd = false).fit(vectors)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "scaler: org.apache.spark.mllib.feature.StandardScalerModel = org.apache.spark.mllib.feature.StandardScalerModel@56c50f2e\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 23
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "185607E2F55845A595996CAFF118A9E8"
+    },
+    "cell_type" : "code",
+    "source" : "val scaledVectors = vectors.map(v => scaler.transform(v))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "scaledVectors: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MapPartitionsRDD[8] at map at <console>:109\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 26
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "632E5A776FC54BC484E3D758B2E3A0D4"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.mllib.linalg.Matrix\nimport org.apache.spark.mllib.linalg.distributed.RowMatrix",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.mllib.linalg.Matrix\nimport org.apache.spark.mllib.linalg.distributed.RowMatrix\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 27
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "7370328D29E04D8B8CCC36D6C33EE5CA"
+    },
+    "cell_type" : "code",
+    "source" : "val matrix = new RowMatrix(scaledVectors)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "matrix: org.apache.spark.mllib.linalg.distributed.RowMatrix = org.apache.spark.mllib.linalg.distributed.RowMatrix@5b6ce5fa\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 28
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "4C93DC8F44524D23BB1F0DE2B593C9F3"
+    },
+    "cell_type" : "code",
+    "source" : "val K = 10\nval pc = matrix.computePrincipalComponents(K)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "K: Int = 10\npc: org.apache.spark.mllib.linalg.Matrix = \n-0.021137980807795276  -0.03815434784890215   ... (10 total)\n-0.02334205920609267   -0.041141333099243727  ...\n-0.023108106522863006  -0.040170256303991014  ...\n-0.023942540488276855  -0.04142349571631127   ...\n-0.023305425582721993  -0.040858191429593016  ...\n-0.02212835391726279   -0.04058840956407408   ...\n-0.02230613815816712   -0.04047683829132107   ...\n-0.021954528429274808  -0.039630647523612006  ...\n-0.022261770910234464  -0.04040343276362362   ...\n-0.021752533999088854  -0.039113444888995305  ...\n-0.022002824926479807  -0.03901413190433076   ...\n-0.021465858005066202  -0.037967150863150306  ...\n-0.021149332327501373  -0.03783451571199863   ...\n-0.021815920789302806  -0.036155359451226304  ...\n-0.021498931979643084  -0.0325..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 29
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "89EA54821F484F528EDB49E2003E2670"
+    },
+    "cell_type" : "code",
+    "source" : "val rows = pc.numRows\nval cols = pc.numCols\nprintln(rows, cols)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "(2500,10)\nrows: Int = 2500\ncols: Int = 10\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 30
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "9C74ABBCD1CC46A08B2A4C42F47CA697"
+    },
+    "cell_type" : "code",
+    "source" : "val projected = matrix.multiply(pc)\nprintln(projected.numRows, projected.numCols)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "(4945,10)\nprojected: org.apache.spark.mllib.linalg.distributed.RowMatrix = org.apache.spark.mllib.linalg.distributed.RowMatrix@243a5bf6\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 31
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "5B9F8B9231D44976A6E5B3179DBBAC00"
+    },
+    "cell_type" : "code",
+    "source" : "println(projected.rows.take(5).mkString(\"\\n\"))",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "[-622.2388334091725,-755.3748037147213,-280.1358629518384,11.703933491637391,-157.75754866066407,-414.39816622621737,-149.79994623555467,38.61656559312322,-73.4268497679547,-132.2073798304263]\n[42.44039199046684,-900.372301323795,-163.3875653989432,153.92082037565748,381.2925140184266,-24.68533805173027,26.65348216081836,-275.3526406026025,235.64637329145987,-79.93914085621043]\n[-2160.4075853270733,-412.9061659317184,-302.9619388516145,376.44777814704304,113.18938174414203,154.5402111464888,114.47363221859396,-67.25056048903436,-25.189493345281313,63.75312575917428]\n[1505.365260322153,-1495.3447451727852,570.0547450688719,339.34660899065466,-311.83106053761134,-46.10688874185794,-49.332523907331684,66.72587022254288,-42.736092750298624,-104.00929630201709]\n[364.93421105066716,-179.19703032548534,500.8258132172617,-12.750748740734512,69.20267206858531,84.88916121308411,-588.5373382017552,163.55984641393474,62.2785009672199,23.503084248985452]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 34
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "249B3A964ACC4949856F143161B06BC4"
+    },
+    "cell_type" : "code",
+    "source" : "val svd = matrix.computeSVD(10, computeU = true)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "svd: org.apache.spark.mllib.linalg.SingularValueDecomposition[org.apache.spark.mllib.linalg.distributed.RowMatrix,org.apache.spark.mllib.linalg.Matrix] = \nSingularValueDecomposition(org.apache.spark.mllib.linalg.distributed.RowMatrix@433e36cc,[116885.15296724078,71521.74068559214,49714.22137953461,40986.21279920552,32866.72076320913,23217.811572048246,23060.458183715073,20521.67814891247,19622.227000287294,17544.90375997207],-0.021137980807796566  -0.038154347848903106  ... (10 total)\n-0.0233420592060924    -0.041141333099244295  ...\n-0.023108106522862954  -0.04017025630399117   ...\n-0.02394254048827682   -0.04142349571631124   ...\n-0.02330542558272188   -0.04085819142959293   ...\n-0.022128353917262675  -0.040588409564074     ...\n-0.022306138158167003  -0.04047683829132097   ...\n-0.0219..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 32
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "5F72C1EEB34E421B8FC9DB77EF2CC305"
+    },
+    "cell_type" : "code",
+    "source" : "println(s\"U dimension: (${svd.U.numRows}, ${svd.U.numCols})\")\nprintln(s\"S dimension: (${svd.s.size}, )\")\nprintln(s\"V dimension: (${svd.V.numRows}, ${svd.V.numCols})\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "U dimension: (4945, 10)\nS dimension: (10, )\nV dimension: (2500, 10)\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 36
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "4EF13141E93B4F1582EDA049A2887E9C"
+    },
+    "cell_type" : "code",
+    "source" : "val sqlContext = new org.apache.spark.sql.SQLContext(sc)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "<console>:89: warning: constructor SQLContext in class SQLContext is deprecated: Use SparkSession.builder instead\n       val sqlContext = new org.apache.spark.sql.SQLContext(sc)\n                        ^\nsqlContext: org.apache.spark.sql.SQLContext = org.apache.spark.sql.SQLContext@444443c1\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 33
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "07754D2F83884462AD22AC319AFFA3D6"
+    },
+    "cell_type" : "code",
+    "source" : "import sqlContext.implicits._",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import sqlContext.implicits._\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 34
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "60021625C8CE4310B367503FE21B975C"
+    },
+    "cell_type" : "code",
+    "source" : "val projectedRDD  =  projected.rows",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "projectedRDD: org.apache.spark.rdd.RDD[org.apache.spark.mllib.linalg.Vector] = MapPartitionsRDD[11] at mapPartitions at RowMatrix.scala:440\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 35
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "CAEE1A36F1FF4E38852D0A7667992FD7"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.mllib.regression.LabeledPoint\n\nval projectedDF =  projectedRDD.map( r =>  Tuple2(1.0,r) ).toDF(\"label\",\"Features\")\n                     .rdd.map(row => LabeledPoint(\n   row.getAs[Double](\"label\"),   \n   row.getAs[org.apache.spark.mllib.linalg.Vector](\"Features\")\n))\nprojectedDF.toDF().printSchema",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "root\n |-- label: double (nullable = false)\n |-- features: vector (nullable = true)\n\nimport org.apache.spark.mllib.regression.LabeledPoint\nprojectedDF: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] = MapPartitionsRDD[127] at map at <console>:145\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 67
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "2CF9FCCF716046B082F0ACBCC43C3BD5"
+    },
+    "cell_type" : "code",
+    "source" : "val splits = projectedDF.randomSplit(Array(0.6, 0.4), seed = 11L)\nval training = splits(0).cache()\nval test = splits(1)\ntraining.toDF().printSchema",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "root\n |-- label: double (nullable = false)\n |-- features: vector (nullable = true)\n\nsplits: Array[org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint]] = Array(MapPartitionsRDD[129] at randomSplit at <console>:150, MapPartitionsRDD[130] at randomSplit at <console>:150)\ntraining: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] = MapPartitionsRDD[129] at randomSplit at <console>:150\ntest: org.apache.spark.rdd.RDD[org.apache.spark.mllib.regression.LabeledPoint] = MapPartitionsRDD[130] at randomSplit at <console>:150\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 68
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "E6207A42085D4D24B3131A7E9ACCDC33"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.mllib.classification.{SVMModel, SVMWithSGD}\nimport org.apache.spark.mllib.evaluation.BinaryClassificationMetrics\nimport org.apache.spark.mllib.util.MLUtils\nimport org.apache.spark.ml.feature.StringIndexer\nval numIterations = 100\n\nval model = SVMWithSGD.train(training, numIterations)\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.mllib.classification.{SVMModel, SVMWithSGD}\nimport org.apache.spark.mllib.evaluation.BinaryClassificationMetrics\nimport org.apache.spark.mllib.util.MLUtils\nimport org.apache.spark.ml.feature.StringIndexer\nnumIterations: Int = 100\nmodel: org.apache.spark.mllib.classification.SVMModel = org.apache.spark.mllib.classification.SVMModel: intercept = 0.0, numFeatures = 10, numClasses = 2, threshold = 0.0\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 69
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "285C8CACCFA94537956D4A5BDFFEBAD1"
+    },
+    "cell_type" : "code",
+    "source" : "model.clearThreshold()",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res99: model.type = org.apache.spark.mllib.classification.SVMModel: intercept = 0.0, numFeatures = 10, numClasses = 2, threshold = None\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "org.apache.spark.mllib.classification.SVMModel: intercept = 0.0, numFeatures = 10, numClasses = 2, threshold = None"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 70
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "3D16ECA555864E6080DDF83E06744FCD"
+    },
+    "cell_type" : "code",
+    "source" : "val scoreAndLabels = test.map { point =>\n  val score = model.predict(point.features)\n  (score, point.label)\n}\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "scoreAndLabels: org.apache.spark.rdd.RDD[(Double, Double)] = MapPartitionsRDD[335] at map at <console>:158\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 71
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "45274A33DE7E49DE9E4AE8E443ED2011"
+    },
+    "cell_type" : "code",
+    "source" : "val metrics = new BinaryClassificationMetrics(scoreAndLabels)\nval auROC = metrics.areaUnderROC()",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "metrics: org.apache.spark.mllib.evaluation.BinaryClassificationMetrics = org.apache.spark.mllib.evaluation.BinaryClassificationMetrics@79b91680\nauROC: Double = 1.0\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 72
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "712368EAC45D4F6084807538FA80AE99"
+    },
+    "cell_type" : "code",
+    "source" : "println(\"Area under ROC = \" + auROC)\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "Area under ROC = 1.0\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 73
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "5470851D7D1C4A8AA1CCFF78529851B6"
+    },
+    "cell_type" : "code",
+    "source" : "model.save(sc, \"/home/ghattim/spark-nbook/notebooks/svmodel.json\")\nval sameModel = SVMModel.load(sc, \"/home/ghattim/spark-nbook/notebooks/svmodel.json\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "sameModel: org.apache.spark.mllib.classification.SVMModel = org.apache.spark.mllib.classification.SVMModel: intercept = 0.0, numFeatures = 10, numClasses = 2, threshold = None\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 76
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "7B71ED8D4BDB49128C9E702E247AB4B7"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.mllib.optimization.L1Updater\n\nval svmAlg = new SVMWithSGD()\nsvmAlg.optimizer\n  .setNumIterations(200)\n  .setRegParam(0.1)\n  .setUpdater(new L1Updater)\nval modelL1 = svmAlg.run(training)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.mllib.optimization.L1Updater\nsvmAlg: org.apache.spark.mllib.classification.SVMWithSGD = org.apache.spark.mllib.classification.SVMWithSGD@67239ad0\nmodelL1: org.apache.spark.mllib.classification.SVMModel = org.apache.spark.mllib.classification.SVMModel: intercept = 0.0, numFeatures = 10, numClasses = 2, threshold = 0.0\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 74
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "3EBE8E4FC45D49C481BC41678960EDDC"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.mllib.classification.{LogisticRegressionModel, LogisticRegressionWithLBFGS}\nimport org.apache.spark.mllib.evaluation.MulticlassMetrics\nimport org.apache.spark.mllib.regression.LabeledPoint\nimport org.apache.spark.mllib.util.MLUtils\n\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.mllib.classification.{LogisticRegressionModel, LogisticRegressionWithLBFGS}\nimport org.apache.spark.mllib.evaluation.MulticlassMetrics\nimport org.apache.spark.mllib.regression.LabeledPoint\nimport org.apache.spark.mllib.util.MLUtils\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 77
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "8B3FBC30288E49E88751EF7B7C1BA139"
+    },
+    "cell_type" : "code",
+    "source" : "val model = new LogisticRegressionWithLBFGS()\n  .setNumClasses(10)\n  .run(training)\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "model: org.apache.spark.mllib.classification.LogisticRegressionModel = org.apache.spark.mllib.classification.LogisticRegressionModel: intercept = 0.0, numFeatures = 90, numClasses = 10, threshold = 0.5\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 78
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "F36A840EE67A499B90F921251643DA50"
+    },
+    "cell_type" : "code",
+    "source" : "val predictionAndLabels = test.map { case LabeledPoint(label, features) =>\n  val prediction = model.predict(features)\n  (prediction, label)\n}\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "predictionAndLabels: org.apache.spark.rdd.RDD[(Double, Double)] = MapPartitionsRDD[804] at map at <console>:162\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 79
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "012C264C2C614A0689C67FC8F0D83ADB"
+    },
+    "cell_type" : "code",
+    "source" : "val metrics = new MulticlassMetrics(predictionAndLabels)\nval accuracy = metrics.accuracy\nprintln(s\"Accuracy = $accuracy\")\n\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "Accuracy = 0.5258883248730964\nmetrics: org.apache.spark.mllib.evaluation.MulticlassMetrics = org.apache.spark.mllib.evaluation.MulticlassMetrics@4819cdbc\naccuracy: Double = 0.5258883248730964\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 80
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "AD961F040B90477B9341D8D0C90F6D45"
+    },
+    "cell_type" : "code",
+    "source" : "model.save(sc, \"/home/ghattim/spark-nbook/notebooks/LinRegModel.json\")\nval sameModel = LogisticRegressionModel.load(sc,\n  \"/home/ghattim/spark-nbook/notebooks/LinRegModel.json\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "sameModel: org.apache.spark.mllib.classification.LogisticRegressionModel = org.apache.spark.mllib.classification.LogisticRegressionModel: intercept = 0.0, numFeatures = 90, numClasses = 10, threshold = 0.5\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 81
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "ECF810AB11B3488088FE835EB3783E89"
+    },
+    "cell_type" : "code",
+    "source" : "import org.apache.spark.ml.clustering.KMeans\nimport org.apache.spark.mllib.util.MLUtils\n",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "import org.apache.spark.ml.clustering.KMeans\nimport org.apache.spark.mllib.util.MLUtils\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 41
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "1845756FAAD043008C77FEA104BE89B5"
+    },
+    "cell_type" : "code",
+    "source" : "val km =  new KMeans()\n            .setK(10)\n            .setFeaturesCol(\"features\")\n            .setPredictionCol(\"prediction\")",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "km: org.apache.spark.ml.clustering.KMeans = kmeans_be23b107bacb\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 42
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab1633438007-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "38586E88B23046DE88D2222752B582F9"
+    },
+    "cell_type" : "code",
+    "source" : "projectedDF.take(5)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "res61: Array[org.apache.spark.sql.Row] = Array([1,[-622.2388334091725,-755.3748037147213,-280.1358629518384,11.703933491637391,-157.75754866066407,-414.39816622621737,-149.79994623555467,38.61656559312322,-73.4268497679547,-132.2073798304263]], [1,[42.44039199046684,-900.372301323795,-163.3875653989432,153.92082037565748,381.2925140184266,-24.68533805173027,26.65348216081836,-275.3526406026025,235.64637329145987,-79.93914085621043]], [1,[-2160.4075853270733,-412.9061659317184,-302.9619388516145,376.44777814704304,113.18938174414203,154.5402111464888,114.47363221859396,-67.25056048903436,-25.189493345281313,63.75312575917428]], [1,[1505.365260322153,-1495.3447451727852,570.0547450688719,339.34660899065466,-311.83106053761134,-46.10688874185794,-49.332523907331684,66.72587022254288,-42.73..."
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : "<div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon7025191c503f86c7dd600450a31404ba&quot;,&quot;dataInit&quot;:[],&quot;genId&quot;:&quot;1633438007&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tabs'], \n      function(playground, _magictabs) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictabs,\n    \"o\": {}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <div>\n        <ul class=\"nav nav-tabs\" id=\"ul1633438007\"><li>\n              <a href=\"#tab1633438007-0\"><i class=\"fa fa-table\"/></a>\n            </li><li>\n              <a href=\"#tab1633438007-1\"><i class=\"fa fa-cubes\"/></a>\n            </li></ul>\n\n        <div class=\"tab-content\" id=\"tab1633438007\"><div class=\"tab-pane\" id=\"tab1633438007-0\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon663948ead943816e21cedb98d52bca9c&quot;,&quot;dataInit&quot;:[{&quot;one&quot;:1,&quot;features&quot;:&quot;[-622.2388334091725,-755.3748037147213,-280.1358629518384,11.703933491637391,-157.75754866066407,-414.39816622621737,-149.79994623555467,38.61656559312322,-73.4268497679547,-132.2073798304263]&quot;},{&quot;one&quot;:1,&quot;features&quot;:&quot;[42.44039199046684,-900.372301323795,-163.3875653989432,153.92082037565748,381.2925140184266,-24.68533805173027,26.65348216081836,-275.3526406026025,235.64637329145987,-79.93914085621043]&quot;},{&quot;one&quot;:1,&quot;features&quot;:&quot;[-2160.4075853270733,-412.9061659317184,-302.9619388516145,376.44777814704304,113.18938174414203,154.5402111464888,114.47363221859396,-67.25056048903436,-25.189493345281313,63.75312575917428]&quot;},{&quot;one&quot;:1,&quot;features&quot;:&quot;[1505.365260322153,-1495.3447451727852,570.0547450688719,339.34660899065466,-311.83106053761134,-46.10688874185794,-49.332523907331684,66.72587022254288,-42.736092750298624,-104.00929630201709]&quot;},{&quot;one&quot;:1,&quot;features&quot;:&quot;[364.93421105066716,-179.19703032548534,500.8258132172617,-12.750748740734512,69.20267206858531,84.88916121308411,-588.5373382017552,163.55984641393474,62.2785009672199,23.503084248985452]&quot;}],&quot;genId&quot;:&quot;492592739&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/tableChart'], \n      function(playground, _magictableChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magictableChart,\n    \"o\": {\"headers\":[\"one\",\"features\"],\"width\":600,\"height\":400}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon9c9bebe8004c0801dfeee38a47cf200d&quot;,&quot;initialValue&quot;:&quot;5&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anoncd572dce704880cc6f5613321b7de553&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div><div class=\"tab-pane\" id=\"tab1633438007-1\">\n            <div>\n      <script data-this=\"{&quot;dataId&quot;:&quot;anon219d5c8dd4a3ca56d3a18ff50b01c437&quot;,&quot;dataInit&quot;:[{&quot;one&quot;:1,&quot;features&quot;:&quot;[-622.2388334091725,-755.3748037147213,-280.1358629518384,11.703933491637391,-157.75754866066407,-414.39816622621737,-149.79994623555467,38.61656559312322,-73.4268497679547,-132.2073798304263]&quot;},{&quot;one&quot;:1,&quot;features&quot;:&quot;[42.44039199046684,-900.372301323795,-163.3875653989432,153.92082037565748,381.2925140184266,-24.68533805173027,26.65348216081836,-275.3526406026025,235.64637329145987,-79.93914085621043]&quot;},{&quot;one&quot;:1,&quot;features&quot;:&quot;[-2160.4075853270733,-412.9061659317184,-302.9619388516145,376.44777814704304,113.18938174414203,154.5402111464888,114.47363221859396,-67.25056048903436,-25.189493345281313,63.75312575917428]&quot;},{&quot;one&quot;:1,&quot;features&quot;:&quot;[1505.365260322153,-1495.3447451727852,570.0547450688719,339.34660899065466,-311.83106053761134,-46.10688874185794,-49.332523907331684,66.72587022254288,-42.736092750298624,-104.00929630201709]&quot;},{&quot;one&quot;:1,&quot;features&quot;:&quot;[364.93421105066716,-179.19703032548534,500.8258132172617,-12.750748740734512,69.20267206858531,84.88916121308411,-588.5373382017552,163.55984641393474,62.2785009672199,23.503084248985452]&quot;}],&quot;genId&quot;:&quot;1542991908&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/req(['../javascripts/notebook/playground','../javascripts/notebook/magic/pivotChart'], \n      function(playground, _magicpivotChart) {\n        // data ==> data-this (in observable.js's scopedEval) ==> this in JS => { dataId, dataInit, ... }\n        // this ==> scope (in observable.js's scopedEval) ==> this.parentElement ==> div.container below (toHtml)\n\n        playground.call(data,\n                        this\n                        ,\n                        {\n    \"f\": _magicpivotChart,\n    \"o\": {\"width\":600,\"height\":400,\"derivedAttributes\":{},\"extraOptions\":{}}\n  }\n  \n                        \n                        \n                      );\n      }\n    );/*]]>*/</script>\n    <div>\n      <span class=\"chart-total-item-count\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anona4712ac58c08e510f48dc927e86b8570&quot;,&quot;initialValue&quot;:&quot;5&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p> entries total</span>\n      <span class=\"chart-sampling-warning\"><p data-bind=\"text: value\"><script data-this=\"{&quot;valueId&quot;:&quot;anon4f385aa0f014f8f3ca3e55277bd573d1&quot;,&quot;initialValue&quot;:&quot;&quot;}\" type=\"text/x-scoped-javascript\">/*<![CDATA[*/\nreq(\n['observable', 'knockout'],\nfunction (O, ko) {\n  ko.applyBindings({\n      value: O.makeObservable(valueId, initialValue)\n    },\n    this\n  );\n});\n        /*]]>*/</script></p></span>\n      <div>\n      </div>\n    </div></div>\n            </div></div>\n      </div>\n    </div></div>"
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 46
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "70CBF12D37044EC280C67335D23DA717"
+    },
+    "cell_type" : "code",
+    "source" : "val convprojDF = MLUtils.convertVectorColumnsToML(projectedDF)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "convprojDF: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] = [one: int, features: vector]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 56
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "A78C04EA449D4A9E85067A08204AFB4B"
+    },
+    "cell_type" : "code",
+    "source" : "val kmModel =  km.fit(convprojDF)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "kmModel: org.apache.spark.ml.clustering.KMeansModel = kmeans_be23b107bacb\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 57
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "D243DF4EC798425E96B6C5F99C5D0771"
+    },
+    "cell_type" : "code",
+    "source" : "kmModel.clusterCenters.foreach(println)",
+    "outputs" : [ {
+      "name" : "stdout",
+      "output_type" : "stream",
+      "text" : "[1627.3771422586528,-491.99655991500947,303.37711864568314,-98.35113902493819,221.7588108851498,6.769761137684233,85.61718278216937,140.10767639364983,92.06728698489881,19.705408583294062]\n[1671.1131243524283,1067.5320479066056,-1725.3998542478173,-19.017032549758593,239.31160935769438,488.46520454815334,217.02264978804916,-79.2270872967417,94.09359055108435,-7.615324520008812]\n[-138.2248846800853,1952.4658774983939,288.49812052907123,-431.8147107084506,23.279407703620496,-31.466747115872202,-88.65221398305805,-27.934865492213095,32.9745413918411,18.966007745526035]\n[-1434.7101659578689,-505.51577094482553,-192.8392612535528,-16.73884404649509,13.74417638408784,18.52291568669743,19.628799490568653,-4.810656641321013,30.61800167643833,-22.418645623796895]\n[-274.4419837080003,-687.922306422332,2615.5796117336727,326.53055493831295,691.9282968716714,583.3757967674555,-192.03487172972623,-209.78501637655944,-79.48090760968543,130.9741962168714]\n[545.1268853460182,1293.4927568170308,-73.71487073697848,1439.7901983584563,52.08153047303295,-270.2707839171211,55.14902368172545,-44.09581863802124,13.584132383321855,-7.33520314686081]\n[-2916.7850455330286,-386.2142221459502,-98.70086029809211,75.41740226061133,-46.189920119972186,24.695938974982994,31.72773279136725,-4.716029934079039,26.89974236298173,-2.3887280837038722]\n[-429.2904426270444,-447.0479191330679,143.24434558103295,-94.89471436827822,-129.01341616032508,12.536301621694077,63.20994078863444,5.668942060166578,-90.99268076436981,-37.503518083959406]\n[4508.516102004217,-750.9895484112897,145.24249363433225,-5.348202611647985,-92.3274593502494,-114.34138086217477,54.59325817442349,2.2999500675714857,-13.026003781056197,-42.59656524142189]\n[530.2744263025619,-540.6679114955322,-325.53520741123924,-77.90527598142614,-132.72130351467987,-84.07716223188301,-254.49579642673913,-4.120066427618874,-24.62266439808374,88.61239055998206]\n"
+    }, {
+      "metadata" : { },
+      "data" : {
+        "text/html" : ""
+      },
+      "output_type" : "execute_result",
+      "execution_count" : 58
+    } ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "2DAA09227F994955A5110EF8A7BD2BC6"
+    },
+    "cell_type" : "code",
+    "source" : "",
+    "outputs" : [ ]
+  } ],
+  "nbformat" : 4
+}
