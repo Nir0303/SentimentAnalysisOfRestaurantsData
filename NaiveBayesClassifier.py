@@ -7,12 +7,12 @@ import pickle
 import os
 import argparse
 import re
+import pandas as pd
 
-global word_features
 
 stopWords = set(stopwords.words('english'))
 specialCharacters = re.compile('[^a-zA-Z0-9 \n\.]')
-
+word_features=None
 def parse2(x,typ):
     cleanr = re.compile('<.*?>')
     cleantext = re.sub(cleanr, '', x)
@@ -36,16 +36,18 @@ def filterValues(x):
     return values
 
 
+
+def extract_features(document):
+	global word_features
+	document_words = set(document)
+	features = {}
+	for word in word_features:
+	  if word not in stopWords:
+	    features['contains(%s)' % word] = (word in document_words)
+	return features
+
+
 def trainData():
-    def extract_features(document):
-	    document_words = set(document)
-	    features = {}
-	    for word in word_features:
-		    if word not in stopWords:
-		       features['contains(%s)' % word] = (word in document_words)
-	    return features
-
-
     with open("data/IntegratedCons.txt") as IC:
 	   combinedData=map(lambda x:parse2(x,'negative'),IC.readlines())
     with open("data/IntegratedCons.txt") as IC:
@@ -56,13 +58,15 @@ def trainData():
     for i in combinedData:
 	    words.extend(i[0])
     dataFreq= nltk.FreqDist(tuple(words))
-
+    global word_features
     word_features= dataFreq.keys()
     print dataFreq.most_common(10)
     training_set = nltk.classify.apply_features(extract_features,combinedData)
     classifier = nltk.NaiveBayesClassifier.train(training_set)
 
     return classifier
+
+
 
 
 parser = argparse.ArgumentParser()
@@ -79,65 +83,15 @@ else:
 	with open('output/NaiveBayesClassifier','rb') as classifier:
 		naiveBayesClassifier = pickle.load(classifier)
 
-print classifier.show_most_informative_features(32)  
+print naiveBayesClassifier.show_most_informative_features(32)  
 
 restaurantData = pd.read_csv('data/restaurantReviews.csv',delimiter="~")
 
 restaurantData["tokenizedData"]=restaurantData["ReviewText"].str.lower().str.split().apply(lambda x: filterValues(x))
 
+restaurantData["sentiment"]=restaurantData["tokenizedData"].apply(lambda x :naiveBayesClassifier.classify(extract_features(x)))
+
+
 print restaurantData[:5]
 
-#predictFile = pd.read_csv("/")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-reviewData=np.loadtxt("TrainDataSet/reviewsR.txt",delimiter="~",dtype='str')
-
-
-print len(reviewData)
-print len(reviewData[:,0])
-
-
-words =  list(map(lambda x : [x[0].split(),x[1]],reviewData))
-
-words = np.array(words)
-
-
-
-
-
-dataFreq= nltk.FreqDist(map(tuple,words[:,0]))
-word_features= dataFreq.keys()
-
-print word_features
-
-
-with open("TrainDataSet/IntegratedCons.txt") as IC:
-	combinedData=map(lambda x:parse_second(x,'negative'),IC.readlines())
-
-
-with open("TrainDataSet/IntegratedCons.txt") as IC:
-	combinedData.extend(map(lambda x:parse_second(x,'positive'),IC.readlines()))
-
-with open("TrainDataSet/reviewsR.txt") as IC:
-	combinedData.extend(map(lambda x:parse(x),IC.readlines()))
-
-"""
-
+restaurantData.to_csv('output/predicted.csv')
