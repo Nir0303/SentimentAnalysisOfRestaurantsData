@@ -1,6 +1,6 @@
 ## Sentiment Analysis of Restaurant Reviews
 
-[![N|Solid](http://www.clarabridge.com/wp-content/uploads/2016/10/Sentiment.jpg)]
+![Alt text](http://www.clarabridge.com/wp-content/uploads/2016/10/Sentiment.jpg)
 
 For Sentiment Analysis following are languages/ tools are used
 
